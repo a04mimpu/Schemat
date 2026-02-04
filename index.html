@@ -71,6 +71,7 @@
             const [stats, setStats] = useState({});
             const [weekNumber, setWeekNumber] = useState(1);
             const [startDate, setStartDate] = useState('');
+            const [weekDates, setWeekDates] = useState([]);
 
             useEffect(() => {
                 const initialStats = {};
@@ -79,6 +80,29 @@
                 });
                 setStats(initialStats);
             }, []);
+
+            useEffect(() => {
+                if (startDate) {
+                    calculateWeekDates(startDate);
+                }
+            }, [startDate]);
+
+            const calculateWeekDates = (dateString) => {
+                const start = new Date(dateString);
+                const dates = [];
+                for (let i = 0; i < 5; i++) {
+                    const date = new Date(start);
+                    date.setDate(start.getDate() + i);
+                    dates.push(date);
+                }
+                setWeekDates(dates);
+            };
+
+            const formatDate = (date) => {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                return `${day}/${month}`;
+            };
 
             const generateSchedule = () => {
                 const newSchedule = {};
@@ -306,9 +330,14 @@
                                             <thead>
                                                 <tr className="bg-gray-100">
                                                     <th className="border border-gray-300 p-3 text-left font-semibold">Person</th>
-                                                    {weekdays.map(day => (
+                                                    {weekdays.map((day, idx) => (
                                                         <th key={day} className="border border-gray-300 p-3 text-center font-semibold">
-                                                            {day}
+                                                            <div>{day}</div>
+                                                            {weekDates[idx] && (
+                                                                <div className="text-sm font-normal text-gray-600">
+                                                                    {formatDate(weekDates[idx])}
+                                                                </div>
+                                                            )}
                                                         </th>
                                                     ))}
                                                 </tr>
