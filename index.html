@@ -91,10 +91,15 @@
             const calculateMonthDates = (dateString) => {
                 const start = new Date(dateString);
                 const dates = [];
-                for (let i = 0; i < 20; i++) { // 4 weeks = 20 workdays
-                    const date = new Date(start);
-                    date.setDate(start.getDate() + i);
-                    dates.push(date);
+                let currentDate = new Date(start);
+                
+                for (let i = 0; i < 20; i++) {
+                    // Add workdays only (skip weekends)
+                    while (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+                    dates.push(new Date(currentDate));
+                    currentDate.setDate(currentDate.getDate() + 1);
                 }
                 setMonthDates(dates);
             };
